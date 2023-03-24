@@ -30,6 +30,7 @@ abstract class BaseDigimon implements Interface\DigimonInterface
     protected int $consecutiveFeeding = 0;
     protected int $feedingLimit = 5;
     protected ?Carbon $malnutritionStart = null;
+    protected int $sleepingHour = 21;
 
     public function __construct()
     {
@@ -193,6 +194,16 @@ abstract class BaseDigimon implements Interface\DigimonInterface
     public function isDead(): bool
     {
         return $this->isDead;
+    }
+
+    public function getSleepTime(): Carbon
+    {
+        return Carbon::createFromTime(21, 0, 0);
+    }
+
+    public function getType(): string
+    {
+        return $this->type->value;
     }
 
     public function calculateEvolutionSuccessRate(): int
