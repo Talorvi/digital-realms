@@ -36,6 +36,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property Carbon $sleeping_hour
  * @property Carbon $created_at
  * @property Carbon $updated_at
+ * @method static where(string $string, $id)
+ * @method static create(array $array)
  */
 class UserDigimon extends Model
 {
