@@ -5,6 +5,7 @@ namespace App\Models\Digimon\Ultimate;
 use App\Enums\DigimonType;
 use App\Models\Digimon\BaseDigimon;
 use App\Models\Digimon\Mega\BanchoMamemon;
+use App\Models\UserDigimon;
 
 final class Mamemon extends BaseDigimon
 {
@@ -17,22 +18,22 @@ final class Mamemon extends BaseDigimon
         $this->type = DigimonType::DATA;
     }
 
-    public function canEvolve(): bool
+    public function canEvolve(UserDigimon $userDigimon): bool
     {
-        $hoursSinceCreation = $this->getCreatedAt()->diffInHours();
+        $hoursSinceCreation = $userDigimon->created_at->diffInHours();
 
         return $hoursSinceCreation >= 40;
     }
 
-    public function evolve(): ?BaseDigimon
+    public function evolve(UserDigimon $userDigimon): ?BaseDigimon
     {
-        if (!$this->canEvolve()) {
+        if (!$this->canEvolve($userDigimon)) {
             return null;
         }
 
-        $successRate = $this->calculateEvolutionSuccessRate();
+        $successRate = $userDigimon->calculateEvolutionSuccessRate();
 
-        if (rand(0, 100) < $successRate && $this->getCareMistakes() < 2) {
+        if (rand(0, 100) < $successRate && $userDigimon->getCareMistakes() < 2) {
             return new BanchoMamemon();
         }
 

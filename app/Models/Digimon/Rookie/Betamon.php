@@ -9,6 +9,7 @@ use App\Models\Digimon\Champion\Devimon;
 use App\Models\Digimon\Champion\Meramon;
 use App\Models\Digimon\Champion\Numemon;
 use App\Models\Digimon\Champion\Seadramon;
+use App\Models\UserDigimon;
 use Carbon\Carbon;
 
 final class Betamon extends BaseDigimon
@@ -22,22 +23,22 @@ final class Betamon extends BaseDigimon
         $this->type = DigimonType::VIRUS;
     }
 
-    public function canEvolve(): bool
+    public function canEvolve(UserDigimon $userDigimon): bool
     {
-        $hoursSinceCreation = $this->getCreatedAt()->diffInHours(Carbon::now());
+        $hoursSinceCreation = $userDigimon->created_at->diffInHours(Carbon::now());
 
         return $hoursSinceCreation >= 24;
     }
 
-    public function evolve(): ?BaseDigimon
+    public function evolve(UserDigimon $userDigimon): ?BaseDigimon
     {
-        if (!$this->canEvolve()) {
+        if (!$this->canEvolve($userDigimon)) {
             return null;
         }
 
-        $careMistakes = $this->getCareMistakes();
-        $training = $this->getTraining();
-        $overfeed = $this->getOverfeed();
+        $careMistakes = $userDigimon->getCareMistakes();
+        $training = $userDigimon->getTraining();
+        $overfeed = $userDigimon->getOverfeed();
 
         if ($careMistakes <= 2 && $training >= 16) {
             return new Devimon();

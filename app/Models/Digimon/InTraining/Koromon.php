@@ -5,6 +5,8 @@ namespace App\Models\Digimon\InTraining;
 use App\Models\Digimon\BaseDigimon;
 use App\Models\Digimon\Rookie\Agumon;
 use App\Models\Digimon\Rookie\Betamon;
+use App\Models\UserDigimon;
+use Carbon\Carbon;
 
 final class Koromon extends BaseDigimon
 {
@@ -15,24 +17,19 @@ final class Koromon extends BaseDigimon
         $this->stage = 2;
     }
 
-    public function canEvolve(): bool
+    public function canEvolve(UserDigimon $userDigimon): bool
     {
-        $ageInHours = $this->getAgeInHours();
-
-        if ($ageInHours >= 12) {
-            return true;
-        }
-
-        return false;
+        $ageInHours = $userDigimon->created_at->diffInHours(Carbon::now());
+        return $ageInHours >= 12;
     }
 
-    public function evolve(): ?BaseDigimon
+    public function evolve(UserDigimon $userDigimon): ?BaseDigimon
     {
-        if (!$this->canEvolve()) {
+        if (!$this->canEvolve($userDigimon)) {
             return null;
         }
 
-        $careMistakes = $this->getCareMistakes();
+        $careMistakes = $userDigimon->getCareMistakes();
 
         if ($careMistakes >= 0 && $careMistakes <= 2) {
             return new Agumon();
@@ -41,11 +38,5 @@ final class Koromon extends BaseDigimon
         }
 
         return null;
-    }
-
-    private function getAgeInHours(): float
-    {
-        $ageInSeconds = time() - $this->created_at->getTimestamp();
-        return $ageInSeconds / 3600;
     }
 }

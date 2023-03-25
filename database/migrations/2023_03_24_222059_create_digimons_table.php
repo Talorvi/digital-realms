@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('base_power')->default(0);
             $table->string('type')->default('free');
             $table->time('sleep_time')->default(Carbon::createFromTime(21, 0, 0)->toTimeString());
+            $table->integer('feeding_limit')->default(5);
             $table->timestamps();
         });
     }

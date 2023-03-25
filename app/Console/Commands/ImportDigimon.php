@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Digimon\BaseDigimon;
 use App\Models\Digimon\Digimon;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
@@ -31,6 +32,7 @@ class ImportDigimon extends Command
 
             foreach ($files as $file) {
                 $className = 'App\\Models\\Digimon\\' . $stage . '\\' . pathinfo($file->getFilename(), PATHINFO_FILENAME);
+                /** @var BaseDigimon $digimon */
                 $digimon = new $className();
 
                 $existingDigimon = Digimon::where('name', $digimon->getName())->first();
@@ -42,6 +44,7 @@ class ImportDigimon extends Command
                         'base_power' => $digimon->getBasePower(),
                         'type' => $digimon->getType(),
                         'sleeping_hour' => $digimon->getSleepTime()->toTimeString(),
+                        'feeding_limit' => $digimon->getFeedingLimit(),
                     ]);
                     $digimonAdded++;
                 } else {

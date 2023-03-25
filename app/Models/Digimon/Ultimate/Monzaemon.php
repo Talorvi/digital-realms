@@ -4,6 +4,7 @@ namespace App\Models\Digimon\Ultimate;
 
 use App\Enums\DigimonType;
 use App\Models\Digimon\BaseDigimon;
+use App\Models\UserDigimon;
 
 final class Monzaemon extends BaseDigimon
 {
@@ -16,12 +17,12 @@ final class Monzaemon extends BaseDigimon
         $this->type = DigimonType::VACCINE;
     }
 
-    public function canEvolve(): bool
+    public function canEvolve(UserDigimon $userDigimon): bool
     {
         return false;
     }
 
-    public function evolve(): ?BaseDigimon
+    public function evolve(UserDigimon $userDigimon): ?BaseDigimon
     {
         return null;
     }
