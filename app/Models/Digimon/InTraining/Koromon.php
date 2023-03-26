@@ -19,8 +19,7 @@ final class Koromon extends BaseDigimon
 
     public function canEvolve(UserDigimon $userDigimon): bool
     {
-        $ageInHours = $userDigimon->created_at->diffInHours(Carbon::now());
-        return $ageInHours >= 12;
+        return $userDigimon->age >= 12;
     }
 
     public function evolve(UserDigimon $userDigimon): ?BaseDigimon

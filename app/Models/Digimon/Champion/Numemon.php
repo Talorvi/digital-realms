@@ -20,9 +20,7 @@ final class Numemon extends BaseDigimon
 
     public function canEvolve(UserDigimon $userDigimon): bool
     {
-        $hoursSinceCreation = $userDigimon->created_at->diffInHours();
-
-        return $userDigimon->getBattles() >= 15 && $hoursSinceCreation >= 36;
+        return $userDigimon->getBattles() >= 15 && $userDigimon->age >= 12 + 24 + 36;
     }
 
     public function evolve(UserDigimon $userDigimon): ?BaseDigimon

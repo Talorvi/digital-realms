@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Digimon\BaseDigimon;
 use App\Models\Digimon\Digimon;
 use App\Models\Food\Interface\FoodInterface;
 use App\Models\Training\Interface\TrainingInterface;
@@ -9,6 +10,8 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * Class UserDigimon
@@ -232,6 +235,35 @@ class UserDigimon extends Model
         }
 
         return 0;
+    }
+
+    public static function getDigimonClassMap(): array
+    {
+        return Cache::remember('digimon_class_map', 60 * 24, function () {
+            $filesystem = new Filesystem();
+            $stages = ['Fresh', 'InTraining', 'Rookie', 'Champion', 'Ultimate', 'Mega'];
+            $digimonNameToClassMap = [];
+
+            foreach ($stages as $stage) {
+                $files = $filesystem->allFiles(app_path("Models/Digimon/{$stage}"));
+
+                foreach ($files as $file) {
+                    $className = 'App\\Models\\Digimon\\' . $stage . '\\' . pathinfo($file->getFilename(), PATHINFO_FILENAME);
+                    $digimon = new $className();
+
+                    $digimonNameToClassMap[$digimon->getName()] = $className;
+                }
+            }
+
+            return $digimonNameToClassMap;
+        });
+    }
+
+    public function getDigimonClass(): ?string
+    {
+        $digimonNameToClassMap = $this->getDigimonClassMap();
+
+        return $digimonNameToClassMap[$this->digimon->name] ?? null;
     }
 
     public function user(): BelongsTo

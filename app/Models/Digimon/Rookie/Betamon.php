@@ -25,9 +25,7 @@ final class Betamon extends BaseDigimon
 
     public function canEvolve(UserDigimon $userDigimon): bool
     {
-        $hoursSinceCreation = $userDigimon->created_at->diffInHours(Carbon::now());
-
-        return $hoursSinceCreation >= 24;
+        return $userDigimon->age >= 12 + 24;
     }
 
     public function evolve(UserDigimon $userDigimon): ?BaseDigimon

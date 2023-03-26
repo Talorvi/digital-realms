@@ -20,9 +20,7 @@ final class MetalGreymon extends BaseDigimon
 
     public function canEvolve(UserDigimon $userDigimon): bool
     {
-        $hoursSinceCreation = $userDigimon->created_at->diffInHours();
-
-        return $hoursSinceCreation >= 40;
+        return $userDigimon->age >= 12 + 24 + 36 + 40;
     }
 
     public function evolve(UserDigimon $userDigimon): ?BaseDigimon

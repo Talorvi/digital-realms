@@ -113,7 +113,7 @@ class UpdateUserDigimonStatsJob implements ShouldQueue
     private function updateSleep(UserDigimon $digimon)
     {
         $currentTime = Carbon::now();
-        $sleepingHour = $digimon->sleeping_hour;
+        $sleepingHour = Carbon::parse($digimon->sleeping_hour);
 
         if (!$digimon->is_asleep && $currentTime->diffInMinutes($sleepingHour) <= 30) {
             if ($digimon->lights_off_at && $digimon->lights_off_at->diffInMinutes($sleepingHour) <= 30) {
