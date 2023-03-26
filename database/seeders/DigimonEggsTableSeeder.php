@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Digimon\Digimon;
 use App\Models\DigimonEgg;
 use Illuminate\Database\Seeder;
 
@@ -12,7 +13,7 @@ class DigimonEggsTableSeeder extends Seeder
         $eggs = [
             [
                 'name' => 'Digital Monster Ver.1',
-                'starter_digimon_id' => 1, // Replace with the actual starter Digimon ID
+                'starter_digimon_id' => Digimon::where('name', 'Botamon')->first()->id,
             ],
         ];
 

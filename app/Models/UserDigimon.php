@@ -19,11 +19,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $name
  * @property int $exp
  * @property int $age
- * @property int $energy
- * @property int $hunger
- * @property int $weight
+ * @property float $energy
+ * @property float $hunger
+ * @property float $weight
  * @property int $training
- * @property int $mess
+ * @property float $mess
  * @property bool $is_asleep
  * @property bool $is_dead
  * @property int $care_mistakes
@@ -34,6 +34,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $feeding_limit
  * @property Carbon|null $malnutrition_start
  * @property Carbon $sleeping_hour
+ * @property Carbon $mess_start
+ * @property Carbon|null $lights_off_at
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @method static where(string $string, $id)
@@ -64,6 +66,7 @@ class UserDigimon extends Model
         'feeding_limit',
         'malnutrition_start',
         'sleeping_hour',
+        'mess_start'
     ];
 
     protected $casts = [
@@ -132,7 +135,7 @@ class UserDigimon extends Model
         $this->care_mistakes = 0;
     }
 
-    public function getWeight(): int
+    public function getWeight(): float
     {
         return $this->weight;
     }
@@ -162,7 +165,7 @@ class UserDigimon extends Model
         $this->battles_won++;
     }
 
-    public function getOverfeed(): int
+    public function getOverfeeds(): int
     {
         return $this->overfeeds;
     }

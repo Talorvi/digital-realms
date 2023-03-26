@@ -38,7 +38,7 @@ final class Agumon extends BaseDigimon
 
         $careMistakes = $userDigimon->getCareMistakes();
         $training = $userDigimon->getTraining();
-        $overfeed = $userDigimon->getOverfeed();
+        $overfeed = $userDigimon->getOverfeeds();
 
         if ($careMistakes <= 2 && $training >= 16) {
             return new Greymon();

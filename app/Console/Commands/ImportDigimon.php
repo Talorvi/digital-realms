@@ -43,7 +43,7 @@ class ImportDigimon extends Command
                         'stage' => $digimon->getStage(),
                         'base_power' => $digimon->getBasePower(),
                         'type' => $digimon->getType(),
-                        'sleeping_hour' => $digimon->getSleepTime()->toTimeString(),
+                        'sleep_time' => $digimon->getSleepTime()->toTimeString(),
                         'feeding_limit' => $digimon->getFeedingLimit(),
                     ]);
                     $digimonAdded++;

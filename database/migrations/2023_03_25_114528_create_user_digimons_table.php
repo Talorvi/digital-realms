@@ -20,7 +20,7 @@ return new class extends Migration
             $table->integer('age')->default(0);
             $table->integer('energy')->default(100);
             $table->integer('hunger')->default(100);
-            $table->integer('weight')->default(0);
+            $table->integer('weight')->default(10);
             $table->integer('training')->default(0);
             $table->integer('mess')->default(0);
             $table->boolean('is_asleep')->default(false);
