@@ -17,8 +17,11 @@ class SingleBattle
         $this->player1Digimon = $player1Digimon;
         $this->player2Digimon = $player2Digimon;
 
-        $this->player1DigimonHp = $this->calculateInitialHp($player1Digimon->digimon->stage);
-        $this->player2DigimonHp = $this->calculateInitialHp($player2Digimon->digimon->stage);
+        $player1Bonuses = $player1Digimon->getLevelBasedIncreases();
+        $player2Bonuses = $player2Digimon->getLevelBasedIncreases();
+
+        $this->player1DigimonHp = $this->calculateInitialHp($player1Digimon->digimon->stage) + $player1Bonuses['hpBonus'];
+        $this->player2DigimonHp = $this->calculateInitialHp($player2Digimon->digimon->stage) + $player2Bonuses['hpBonus'];
 
         $this->isPlayer1Turn = true;
     }
@@ -142,5 +145,35 @@ class SingleBattle
             6 => 16,
             default => 10,
         };
+    }
+
+    public function getLevelBasedIncreases(UserDigimon $userDigimon): array
+    {
+        $levelBonuses = [
+            2 => ['hp' => 2, 'power' => 0],
+            3 => ['hp' => 0, 'power' => 10],
+            5 => ['hp' => 2, 'power' => 0],
+            6 => ['hp' => 2, 'power' => 10],
+            8 => ['hp' => 2, 'power' => 0],
+            9 => ['hp' => 0, 'power' => 10],
+            10 => ['hp' => 2, 'power' => 0],
+        ];
+
+        $hpBonus = 0;
+        $powerBonus = 0;
+
+        foreach ($levelBonuses as $levelThreshold => $bonus) {
+            if ($userDigimon->getLevel() >= $levelThreshold) {
+                $hpBonus += $bonus['hp'];
+                $powerBonus += $bonus['power'];
+            } else {
+                break;
+            }
+        }
+
+        return [
+            'hpBonus' => $hpBonus,
+            'powerBonus' => $powerBonus,
+        ];
     }
 }

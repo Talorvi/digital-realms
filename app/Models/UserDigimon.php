@@ -86,6 +86,11 @@ class UserDigimon extends Model
         return $this->exp;
     }
 
+    public function addExp(int $amount): void
+    {
+        $this->exp += $amount;
+    }
+
     public function getLevel(): int
     {
         $exp = $this->getExp();

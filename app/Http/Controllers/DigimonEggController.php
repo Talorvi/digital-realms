@@ -21,7 +21,7 @@ class DigimonEggController extends Controller
             ], 403);
         }
 
-        $existingDigimon = UserDigimon::where('user_id', $user->id)->first();
+        $existingDigimon = UserDigimon::where('user_id', $user->id)->where('is_dead', false)->first();
         if ($existingDigimon !== null) {
             return response()->json([
                 'message' => 'You can have only one Digimon.',

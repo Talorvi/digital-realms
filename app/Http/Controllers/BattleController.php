@@ -50,10 +50,36 @@ class BattleController extends Controller
     {
         $winner->addBattle();
         $winner->addBattleWon();
+        $winner->addExp($this->calculateExpGained($loser, true));
 
         $loser->addBattle();
+        $loser->addExp($this->calculateExpGained($winner, false));
 
         $winner->save();
         $loser->save();
+    }
+
+    private function calculateExpGained(UserDigimon $foughtDigimon, bool $isWon): int
+    {
+         // Different digimon stages add different amount of exp
+        $stageExp = [
+            1 => 10,
+            2 => 20,
+            3 => 50,
+            4 => 100,
+            5 => 200,
+            6 => 500,
+        ];
+
+        $baseExp = $stageExp[$foughtDigimon->digimon->stage] ?? 0;
+        $levelBonusExp = 2 * $foughtDigimon->getLevel();
+
+        $expGained = $baseExp + $levelBonusExp;
+
+        if (!$isWon) {
+            $expGained /= 2;
+        }
+
+        return $expGained;
     }
 }
