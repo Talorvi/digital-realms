@@ -42,8 +42,11 @@ use Illuminate\Support\Facades\Cache;
  * @property Carbon|null $sickness_start
  * @property Carbon $created_at
  * @property Carbon $updated_at
+ * @property Digimon $digimon
  * @method static where(string $string, $id)
  * @method static create(array $array)
+ * @method static find(mixed $player1DigimonId)
+ * @method static findOrFail(mixed $digimon1Id)
  */
 class UserDigimon extends Model
 {
@@ -81,6 +84,32 @@ class UserDigimon extends Model
     public function getExp(): int
     {
         return $this->exp;
+    }
+
+    public function getLevel(): int
+    {
+        $exp = $this->getExp();
+
+        $levelThresholds = [
+            10 => 5000,
+            9 => 3000,
+            8 => 2000,
+            7 => 1500,
+            6 => 1000,
+            5 => 800,
+            4 => 500,
+            3 => 150,
+            2 => 50,
+            1 => 0,
+        ];
+
+        foreach ($levelThresholds as $level => $threshold) {
+            if ($exp >= $threshold) {
+                return $level;
+            }
+        }
+
+        return 1;
     }
 
     public function feed(FoodInterface $food): void
@@ -178,7 +207,7 @@ class UserDigimon extends Model
 
     public function getTraining(): int
     {
-        return $this->training;
+        return min($this->training, 50);
     }
 
     public function getAge(): int
@@ -273,6 +302,11 @@ class UserDigimon extends Model
         $digimonNameToClassMap = $this->getDigimonClassMap();
 
         return $digimonNameToClassMap[$this->digimon->name] ?? null;
+    }
+
+    public function getPower(): int
+    {
+        return $this->digimon->base_power;
     }
 
     public function user(): BelongsTo

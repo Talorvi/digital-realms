@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\RegisterController;
+use App\Http\Controllers\BattleController;
 use App\Http\Controllers\DigimonEggController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -23,6 +24,10 @@ Route::controller(RegisterController::class)->group(function () {
 
 Route::middleware('auth:sanctum')->controller(DigimonEggController::class)->group(function () {
     Route::post('egg/choose', 'createEgg');
+});
+
+Route::middleware('auth:sanctum')->controller(BattleController::class)->group(function () {
+    Route::post('battle/start', 'startBattle');
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
