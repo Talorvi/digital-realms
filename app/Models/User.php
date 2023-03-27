@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * @property UserDigimonStats $userDigimonStats
+ */
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -43,8 +45,77 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function unlockDigimon(int $digimonId)
+    {
+        $isUnlocked = $this->unlockedDigimon()->where('digimon_id', $digimonId)->exists();
+
+        if (!$isUnlocked) {
+            $this->unlockedDigimon()->create([
+                'digimon_id' => $digimonId,
+            ]);
+        }
+    }
+
+    public function addCareMistakeStat(): void
+    {
+        $this->userDigimonStats->care_mistakes++;
+        $this->userDigimonStats->save();
+    }
+
+    public function addTrainingsStat(): void
+    {
+        $this->userDigimonStats->trainings++;
+        $this->userDigimonStats->save();
+    }
+
+    public function addBattlesStat(): void
+    {
+        $this->userDigimonStats->battles++;
+        $this->userDigimonStats->save();
+    }
+
+    public function addBattlesWonStat(): void
+    {
+        $this->userDigimonStats->battles_won++;
+        $this->userDigimonStats->save();
+    }
+
+    public function incrementAgeStat(): void
+    {
+        $this->userDigimonStats->age++;
+        $this->userDigimonStats->save();
+    }
+
+    public function incrementDeathsStat(): void
+    {
+        $this->userDigimonStats->deaths++;
+        $this->userDigimonStats->save();
+    }
+
+    public function incrementFeeds(): void
+    {
+        $this->userDigimonStats->feeds++;
+        $this->userDigimonStats->save();
+    }
+
+    public function incrementIllnesses(): void
+    {
+        $this->userDigimonStats->illnesses++;
+        $this->userDigimonStats->save();
+    }
+
     public function digimons(): HasMany
     {
         return $this->hasMany(UserDigimon::class);
+    }
+
+    public function unlockedDigimon(): HasMany
+    {
+        return $this->hasMany(UnlockedDigimon::class);
+    }
+
+    public function userDigimonStats()
+    {
+        return $this->hasOne(UserDigimonStats::class);
     }
 }

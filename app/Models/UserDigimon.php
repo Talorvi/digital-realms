@@ -43,6 +43,7 @@ use Illuminate\Support\Facades\Cache;
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property Digimon $digimon
+ * @property User $user
  * @method static where(string $string, $id)
  * @method static create(array $array)
  * @method static find(mixed $player1DigimonId)
@@ -130,6 +131,8 @@ class UserDigimon extends Model
                 $this->addOverfeed();
             }
         }
+
+        $this->user->incrementFeeds();
     }
 
     public function train(TrainingInterface $training)
@@ -137,11 +140,12 @@ class UserDigimon extends Model
         $this->hunger += $training->getHungerReduction();
         $this->energy -= $training->getEnergyConsumption();
         $this->weight -= $training->getWeightReduction();
+        $this->user->addTrainingsStat();
     }
 
-    public function sleep(): void
+    public function turnOffLights(): void
     {
-        $this->is_asleep = true;
+        //$this->is_asleep = true;
         $this->lights_off_at = Carbon::now();
     }
 
@@ -158,6 +162,7 @@ class UserDigimon extends Model
     public function addCareMistake(): void
     {
         $this->care_mistakes++;
+        $this->user->addCareMistakeStat();
     }
 
     public function getCareMistakes(): int
@@ -230,6 +235,14 @@ class UserDigimon extends Model
         return $this->is_sick;
     }
 
+    public function makeSick(): void
+    {
+        $this->is_sick = true;
+        $this->sickness_start = now();
+
+        $this->user->incrementIllnesses();
+    }
+
     public function heal(): void
     {
         $this->is_sick = false;
@@ -261,6 +274,12 @@ class UserDigimon extends Model
     public function isDead(): bool
     {
         return $this->is_dead;
+    }
+
+    public function setDead(): void
+    {
+        $this->is_dead = true;
+        $this->user->incrementDeathsStat();
     }
 
     public function calculateEvolutionSuccessRate(): int

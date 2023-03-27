@@ -35,7 +35,7 @@ class UpdateUserDigimonStatsJob implements ShouldQueue
 
     private function updateWaste(UserDigimon $digimon): void
     {
-        $messIncrement = rand(40, 70) / 100;
+        $messIncrement = rand(10, 40) / 100;
         $newMessValue = $digimon->mess + $messIncrement;
 
         $newMessValue = max(0, min($newMessValue, 100));
@@ -53,8 +53,7 @@ class UpdateUserDigimonStatsJob implements ShouldQueue
 
                     $sicknessChance = 30;
                     if (rand(1, 100) <= $sicknessChance) {
-                        $digimon->is_sick = true;
-                        $digimon->sickness_start = now();
+                        $digimon->makeSick();
                     }
                 }
             }
@@ -149,7 +148,7 @@ class UpdateUserDigimonStatsJob implements ShouldQueue
         $careMistakesFactor = 0.5 * (1 - ($digimon->care_mistakes / $maxCareMistakes));
         $maxAgeInHours = $baseMaxAgeInHours * $careMistakesFactor;
         if ($digimon->age >= $maxAgeInHours) {
-            $digimon->is_dead = true;
+            $digimon->setDead();
             return;
         }
 
@@ -157,7 +156,7 @@ class UpdateUserDigimonStatsJob implements ShouldQueue
         if ($digimon->mess >= 100) {
             $messStart = Carbon::parse($digimon->mess_start);
             if ($messStart->diffInHours($currentTime) >= $maxWasteTime) {
-                $digimon->is_dead = true;
+                $digimon->setDead();
                 return;
             }
         }
@@ -166,14 +165,14 @@ class UpdateUserDigimonStatsJob implements ShouldQueue
         if ($digimon->hunger <= 0) {
             $malnutritionStart = Carbon::parse($digimon->malnutrition_start);
             if ($malnutritionStart->diffInHours($currentTime) >= $maxStarvationTime) {
-                $digimon->is_dead = true;
+                $digimon->setDead();
                 return;
             }
         }
 
         // Care mistakes death
         if ($digimon->care_mistakes >= $maxCareMistakes) {
-            $digimon->is_dead = true;
+            $digimon->setDead();
             return;
         }
     }

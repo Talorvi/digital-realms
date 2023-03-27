@@ -17,8 +17,10 @@ class UpdateDigimonAgeJob implements ShouldQueue
     {
         $digimons = UserDigimon::where('is_dead', false)->get();
 
+        /** @var UserDigimon $digimon */
         foreach ($digimons as $digimon) {
             $digimon->age += 1;
+            $digimon->user->incrementAgeStat();
             $digimon->save();
         }
     }

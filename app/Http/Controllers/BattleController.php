@@ -50,9 +50,12 @@ class BattleController extends Controller
     {
         $winner->addBattle();
         $winner->addBattleWon();
+        $winner->user->addBattlesStat();
+        $winner->user->addBattlesWonStat();
         $winner->addExp($this->calculateExpGained($loser, true));
 
         $loser->addBattle();
+        $loser->user->addBattlesStat();
         $loser->addExp($this->calculateExpGained($winner, false));
 
         $winner->save();

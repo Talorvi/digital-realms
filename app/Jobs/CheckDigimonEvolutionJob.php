@@ -31,16 +31,19 @@ class CheckDigimonEvolutionJob implements ShouldQueue
                 $evolvedDigimon = $digimonInstance->evolve($userDigimon);
 
                 if ($evolvedDigimon) {
+                    $evolvedDigimonDbId = Digimon::where('name', $evolvedDigimon->getName())->first()->id;
                     $userDigimon->name = $evolvedDigimon->getName();
-                    $userDigimon->digimon_id = Digimon::where('name', $evolvedDigimon->getName())->first()->id;
+                    $userDigimon->digimon_id = $evolvedDigimonDbId;
                     $userDigimon->care_mistakes = 0;
                     $userDigimon->exp = 0;
                     $userDigimon->energy = 100;
                     $userDigimon->training = 0;
                     $userDigimon->sleeping_hour = $evolvedDigimon->getSleepTime();
+
+                    $userDigimon->user->unlockDigimon($evolvedDigimonDbId);
                 } else {
                     // failed evolution
-                    $userDigimon->is_dead = true;
+                    $userDigimon->setDead();
                 }
                 $userDigimon->save();
             }

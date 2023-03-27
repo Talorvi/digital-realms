@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Models\UserDigimonStats;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\User;
@@ -35,6 +36,8 @@ class RegisterController extends BaseController
         $user = User::create($input);
         $success['token'] = $user->createToken('MyApp')->plainTextToken;
         $success['name'] = $user->name;
+
+        UserDigimonStats::create(['user_id' => $user->id]);
 
         return $this->sendResponse($success, 'Registration complete.');
     }

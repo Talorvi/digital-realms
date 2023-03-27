@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
+ * @property int $id
  * @property string $name
  * @property int $stage
  * @property int $base_power
@@ -25,6 +26,9 @@ class Digimon extends Model
 {
     use HasFactory;
 
+    /**
+     * @var int|mixed
+     */
     protected $fillable = [
         'name',
         'stage',
