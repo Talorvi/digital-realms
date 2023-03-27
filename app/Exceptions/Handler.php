@@ -3,6 +3,10 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -44,5 +48,23 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    public function render($request, Throwable $e): Response|JsonResponse|ResponseAlias
+    {
+        if ($request->expectsJson() || $request->is('api/*')) {
+            if ($e instanceof NotFoundHttpException) {
+                return new JsonResponse(['message' => 'Not Found'], ResponseAlias::HTTP_NOT_FOUND);
+            }
+
+            $response = [
+                'message' => $e->getMessage(),
+                'status' => method_exists($e, 'getStatusCode') ? $e->getStatusCode() : ResponseAlias::HTTP_INTERNAL_SERVER_ERROR,
+            ];
+
+            return response()->json($response, $response['status']);
+        }
+
+        return parent::render($request, $e);
     }
 }
