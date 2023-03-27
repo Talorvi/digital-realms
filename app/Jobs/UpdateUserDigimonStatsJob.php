@@ -27,6 +27,7 @@ class UpdateUserDigimonStatsJob implements ShouldQueue
             $this->updateWeight($userDigimon);
             $this->updateEnergy($userDigimon);
             $this->updateSleep($userDigimon);
+            $this->updateDeath($userDigimon);
 
             $userDigimon->save();
         }
@@ -49,6 +50,12 @@ class UpdateUserDigimonStatsJob implements ShouldQueue
                 if ($messStart->diffInHours() >= 1) {
                     $digimon->addCareMistake();
                     $digimon->mess_start = now();
+
+                    $sicknessChance = 30;
+                    if (rand(1, 100) <= $sicknessChance) {
+                        $digimon->is_sick = true;
+                        $digimon->sickness_start = now();
+                    }
                 }
             }
         } else {
@@ -122,6 +129,52 @@ class UpdateUserDigimonStatsJob implements ShouldQueue
                 $digimon->is_asleep = true;
                 $digimon->care_mistakes += 1;
             }
+        }
+
+        if ($digimon->is_asleep && $currentTime->hour == 8 && $currentTime->minute == 0) {
+            $digimon->is_asleep = false;
+            $digimon->lights_off_at = null;
+        }
+    }
+
+    private function updateDeath(UserDigimon $digimon): void
+    {
+        $currentTime = Carbon::now();
+        $baseMaxAgeInHours = 360; // Example value, adjust as needed
+        $maxWasteTime = 24;
+        $maxStarvationTime = 24;
+        $maxCareMistakes = 10;
+
+        // Age-based death
+        $careMistakesFactor = 0.5 * (1 - ($digimon->care_mistakes / $maxCareMistakes));
+        $maxAgeInHours = $baseMaxAgeInHours * $careMistakesFactor;
+        if ($digimon->age >= $maxAgeInHours) {
+            $digimon->is_dead = true;
+            return;
+        }
+
+        // Waste death
+        if ($digimon->mess >= 100) {
+            $messStart = Carbon::parse($digimon->mess_start);
+            if ($messStart->diffInHours($currentTime) >= $maxWasteTime) {
+                $digimon->is_dead = true;
+                return;
+            }
+        }
+
+        // Starvation death
+        if ($digimon->hunger <= 0) {
+            $malnutritionStart = Carbon::parse($digimon->malnutrition_start);
+            if ($malnutritionStart->diffInHours($currentTime) >= $maxStarvationTime) {
+                $digimon->is_dead = true;
+                return;
+            }
+        }
+
+        // Care mistakes death
+        if ($digimon->care_mistakes >= $maxCareMistakes) {
+            $digimon->is_dead = true;
+            return;
         }
     }
 }

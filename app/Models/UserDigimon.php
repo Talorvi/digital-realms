@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Digimon\BaseDigimon;
 use App\Models\Digimon\Digimon;
 use App\Models\Food\Interface\FoodInterface;
 use App\Models\Training\Interface\TrainingInterface;
@@ -39,6 +38,8 @@ use Illuminate\Support\Facades\Cache;
  * @property Carbon $sleeping_hour
  * @property Carbon $mess_start
  * @property Carbon|null $lights_off_at
+ * @property bool $is_sick
+ * @property Carbon|null $sickness_start
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @method static where(string $string, $id)
@@ -69,7 +70,8 @@ class UserDigimon extends Model
         'feeding_limit',
         'malnutrition_start',
         'sleeping_hour',
-        'mess_start'
+        'mess_start'.
+        'is_sick'
     ];
 
     protected $casts = [
@@ -83,20 +85,15 @@ class UserDigimon extends Model
 
     public function feed(FoodInterface $food): void
     {
-        $this->consecutive_feedings++;
+        $this->hunger += $food->getHungerRegeneration();
+        $this->weight += $food->getWeightAddition();
+        $this->energy += $food->getEnergyRegeneration();
 
-        if ($this->hunger <= 0) {
+        if ($this->hunger >= 100) {
+            $this->hunger = 100;
+            $this->consecutive_feedings++;
             if ($this->consecutive_feedings > $this->feeding_limit) {
                 $this->addOverfeed();
-            }
-        } else {
-            $this->hunger -= $food->getHungerRegeneration();
-            $this->weight += $food->getWeightAddition();
-            $this->energy += $food->getEnergyRegeneration();
-
-            if ($this->hunger <= 0) {
-                $this->hunger = 0;
-                $this->consecutive_feedings = 0;
             }
         }
     }
@@ -111,6 +108,7 @@ class UserDigimon extends Model
     public function sleep(): void
     {
         $this->is_asleep = true;
+        $this->lights_off_at = Carbon::now();
     }
 
     public function wakeup(): void
@@ -191,6 +189,17 @@ class UserDigimon extends Model
     public function resetOverfeed(): void
     {
         $this->overfeeds = 0;
+    }
+
+    public function isSick(): bool
+    {
+        return $this->is_sick;
+    }
+
+    public function heal(): void
+    {
+        $this->is_sick = false;
+        $this->sickness_start = null;
     }
 
     public function addHunger(int $hunger): void

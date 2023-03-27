@@ -38,8 +38,11 @@ class CheckDigimonEvolutionJob implements ShouldQueue
                     $userDigimon->energy = 100;
                     $userDigimon->training = 0;
                     $userDigimon->sleeping_hour = $evolvedDigimon->getSleepTime();
-                    $userDigimon->save();
+                } else {
+                    // failed evolution
+                    $userDigimon->is_dead = true;
                 }
+                $userDigimon->save();
             }
         }
     }
