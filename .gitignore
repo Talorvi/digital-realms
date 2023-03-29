@@ -18,3 +18,4 @@ yarn-error.log
 /.idea
 /.vscode
 /laradock
+/storage/app/firebase_credentials.json

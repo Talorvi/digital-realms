@@ -1,8 +1,9 @@
 <?php
 
+use App\Http\Controllers\API\BattleController;
+use App\Http\Controllers\Api\DeviceTokenController;
+use App\Http\Controllers\API\DigimonEggController;
 use App\Http\Controllers\API\RegisterController;
-use App\Http\Controllers\BattleController;
-use App\Http\Controllers\DigimonEggController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -32,4 +33,10 @@ Route::middleware('auth:sanctum')->controller(BattleController::class)->group(fu
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::middleware('auth:api')->group(function () {
+    Route::post('/device-tokens', [DeviceTokenController::class, 'store']);
+    Route::get('/device-tokens', [DeviceTokenController::class, 'index']);
+    Route::delete('/device-tokens/{deviceToken}', [DeviceTokenController::class, 'destroy']);
 });

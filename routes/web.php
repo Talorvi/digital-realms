@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\MyWebSocketController;
+use BeyondCode\LaravelWebSockets\Facades\WebSocketsRouter;
 use Illuminate\Support\Facades\Route;
 
 /*
