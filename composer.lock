@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9e59e55276a458b92163643c2911ba8d",
+    "content-hash": "cc936ebe884b0c62cf0cd0c861b60b24",
     "packages": [
         {
             "name": "beste/clock",
@@ -1936,6 +1936,64 @@
                 }
             ],
             "time": "2023-02-15T07:12:49+00:00"
+        },
+        {
+            "name": "laravel-notification-channels/fcm",
+            "version": "3.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel-notification-channels/fcm.git",
+                "reference": "104d4fa48eb24d464ae969f1b0df45376f13725a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel-notification-channels/fcm/zipball/104d4fa48eb24d464ae969f1b0df45376f13725a",
+                "reference": "104d4fa48eb24d464ae969f1b0df45376f13725a",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^7.0",
+                "illuminate/notifications": "^9.0|^10.0",
+                "illuminate/support": "^9.0|^10.0",
+                "kreait/laravel-firebase": "^5.0",
+                "php": ">= 8.1"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.5.1",
+                "phpunit/phpunit": "^10.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "NotificationChannels\\Fcm\\FcmServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "NotificationChannels\\Fcm\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Chris Bautista",
+                    "email": "chris.bautista@coreproc.ph",
+                    "homepage": "https://coreproc.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "FCM (Firebase Cloud Messaging) Notifications Driver for Laravel",
+            "homepage": "https://github.com/laravel-notification-channels/fcm",
+            "support": {
+                "issues": "https://github.com/laravel-notification-channels/fcm/issues",
+                "source": "https://github.com/laravel-notification-channels/fcm/tree/3.1.0"
+            },
+            "time": "2023-03-20T21:07:40+00:00"
         },
         {
             "name": "laravel/framework",

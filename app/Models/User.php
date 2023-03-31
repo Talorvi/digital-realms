@@ -11,6 +11,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 /**
  * @property UserDigimonStats $userDigimonStats
+ * @property mixed $deviceTokens
  */
 class User extends Authenticatable
 {
@@ -123,5 +124,10 @@ class User extends Authenticatable
     public function deviceTokens(): HasMany
     {
         return $this->hasMany(DeviceToken::class);
+    }
+
+    public function routeNotificationForFcm()
+    {
+        return $this->deviceTokens->pluck('token')->toArray();
     }
 }

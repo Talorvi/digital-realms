@@ -59,4 +59,20 @@ class DigimonEggController extends Controller
             'digimon' => $newDigimon,
         ]);
     }
+
+    public function getEggs(Request $request): JsonResponse
+    {
+        $eggs = DigimonEgg::all();
+
+        $eggs->map(function ($egg) {
+            $egg->image = url('/icons/eggs/' . $egg->id . '.gif');
+            return $egg;
+        });
+
+        return response()->json([
+            'message' => 'Eggs retrieved successfully.',
+            'eggs' => $eggs,
+        ]);
+    }
+
 }

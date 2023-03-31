@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('foods', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->integer('hunger_regeneration');
-            $table->integer('weight_addition');
-            $table->integer('energy_regeneration');
+            $table->integer('hunger_regeneration')->default(0);
+            $table->integer('weight_addition')->default(0);
+            $table->integer('energy_regeneration')->default(0);
             $table->timestamps();
         });
     }

@@ -25,11 +25,15 @@ class DeviceTokenController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 400);
+            return response()->json($validator->errors());
         }
 
         $user = $request->user();
-        $user->deviceTokens()->create($validator->validated());
+        $device = DeviceToken::create([
+            'user_id' => $user->id,
+            'token' => $request->get('token'),
+            'device_name' => $request->get('device_name')
+        ]);
 
         return response()->json(['message' => 'Device token added successfully']);
     }

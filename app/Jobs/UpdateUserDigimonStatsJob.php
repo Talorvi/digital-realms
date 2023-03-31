@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\UserDigimon;
+use App\Notifications\DigimonCall;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -45,6 +46,7 @@ class UpdateUserDigimonStatsJob implements ShouldQueue
         if ($newMessValue >= 100) {
             if ($digimon->mess_start === null) {
                 $digimon->mess_start = now();
+                $digimon->user->notify(new DigimonCall($digimon->getName().' is dirty!'));
             } else {
                 $messStart = Carbon::parse($digimon->mess_start);
                 if ($messStart->diffInHours() >= 1) {
@@ -74,6 +76,7 @@ class UpdateUserDigimonStatsJob implements ShouldQueue
         if ($newHungerValue <= 0) {
             if ($digimon->malnutrition_start === null) {
                 $digimon->malnutrition_start = now();
+                $digimon->user->notify(new DigimonCall($digimon->getName().' is hungry!'));
             } else {
                 $malnutritionStart = Carbon::parse($digimon->malnutrition_start);
                 if ($malnutritionStart->diffInHours() >= 1) {
@@ -131,6 +134,7 @@ class UpdateUserDigimonStatsJob implements ShouldQueue
         }
 
         if ($digimon->is_asleep && $currentTime->hour == 8 && $currentTime->minute == 0) {
+            $digimon->user->notify(new DigimonCall($digimon->getName().' woke up!'));
             $digimon->is_asleep = false;
             $digimon->lights_off_at = null;
         }
@@ -149,6 +153,7 @@ class UpdateUserDigimonStatsJob implements ShouldQueue
         $maxAgeInHours = $baseMaxAgeInHours * $careMistakesFactor;
         if ($digimon->age >= $maxAgeInHours) {
             $digimon->setDead();
+            $digimon->user->notify(new DigimonCall($digimon->getName().' died of old age.'));
             return;
         }
 
@@ -157,6 +162,7 @@ class UpdateUserDigimonStatsJob implements ShouldQueue
             $messStart = Carbon::parse($digimon->mess_start);
             if ($messStart->diffInHours($currentTime) >= $maxWasteTime) {
                 $digimon->setDead();
+                $digimon->user->notify(new DigimonCall($digimon->getName().' died of bad conditions.'));
                 return;
             }
         }
@@ -166,12 +172,14 @@ class UpdateUserDigimonStatsJob implements ShouldQueue
             $malnutritionStart = Carbon::parse($digimon->malnutrition_start);
             if ($malnutritionStart->diffInHours($currentTime) >= $maxStarvationTime) {
                 $digimon->setDead();
+                $digimon->user->notify(new DigimonCall($digimon->getName().' died of starvation.'));
                 return;
             }
         }
 
         // Care mistakes death
         if ($digimon->care_mistakes >= $maxCareMistakes) {
+            $digimon->user->notify(new DigimonCall($digimon->getName().' died of bad care.'));
             $digimon->setDead();
             return;
         }

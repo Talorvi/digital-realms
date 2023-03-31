@@ -25,6 +25,7 @@ Route::controller(RegisterController::class)->group(function () {
 
 Route::middleware('auth:sanctum')->controller(DigimonEggController::class)->group(function () {
     Route::post('egg/choose', 'createEgg');
+    Route::get('egg/get', 'getEggs');
 });
 
 Route::middleware('auth:sanctum')->controller(BattleController::class)->group(function () {
@@ -35,7 +36,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware('auth:api')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
     Route::post('/device-tokens', [DeviceTokenController::class, 'store']);
     Route::get('/device-tokens', [DeviceTokenController::class, 'index']);
     Route::delete('/device-tokens/{deviceToken}', [DeviceTokenController::class, 'destroy']);
