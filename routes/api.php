@@ -4,6 +4,7 @@ use App\Http\Controllers\API\BattleController;
 use App\Http\Controllers\Api\DeviceTokenController;
 use App\Http\Controllers\API\DigimonEggController;
 use App\Http\Controllers\API\RegisterController;
+use App\Http\Controllers\API\UserDigimonController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -40,4 +41,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/device-tokens', [DeviceTokenController::class, 'store']);
     Route::get('/device-tokens', [DeviceTokenController::class, 'index']);
     Route::delete('/device-tokens/{deviceToken}', [DeviceTokenController::class, 'destroy']);
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user-digimons', [UserDigimonController::class, 'index']);
+    Route::post('/user-digimons/{userDigimon}/feed', [UserDigimonController::class, 'feed']);
+    Route::post('/user-digimons/{userDigimon}/train', [UserDigimonController::class, 'train']);
+    Route::post('/user-digimons/{userDigimon}/clean', [UserDigimonController::class, 'clean']);
+    Route::post('/user-digimons/{userDigimon}/sleep', [UserDigimonController::class, 'sleep']);
+    Route::post('/user-digimons/{userDigimon}/wakeup', [UserDigimonController::class, 'wakeUp']);
 });

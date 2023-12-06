@@ -118,11 +118,11 @@ class UserDigimon extends Model
         return 1;
     }
 
-    public function feed(FoodInterface $food): void
+    public function feed(Food $food): void
     {
-        $this->hunger += $food->getHungerRegeneration();
-        $this->weight += $food->getWeightAddition();
-        $this->energy += $food->getEnergyRegeneration();
+        $this->hunger += $food->hunger_regeneration;
+        $this->weight += $food->weight_addition;
+        $this->energy += $food->energy_regeneration;
 
         if ($this->hunger >= 100) {
             $this->hunger = 100;
@@ -135,12 +135,14 @@ class UserDigimon extends Model
         $this->user->incrementFeeds();
     }
 
-    public function train(TrainingInterface $training)
+    public function train(Training $training)
     {
-        $this->hunger += $training->getHungerReduction();
-        $this->energy -= $training->getEnergyConsumption();
-        $this->weight -= $training->getWeightReduction();
-        $this->user->addTrainingsStat();
+        if ($this->energy >= $training->energy_consumption) {
+            $this->hunger -= $training->hunger_reduction;
+            $this->energy -= $training->energy_consumption;
+            $this->weight -= $training->weight_reduction;
+            $this->user->addTrainingsStat();
+        }
     }
 
     public function turnOffLights(): void

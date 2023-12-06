@@ -10,6 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class UpdateUserDigimonStatsJob implements ShouldQueue
 {
@@ -17,20 +18,24 @@ class UpdateUserDigimonStatsJob implements ShouldQueue
 
     public function handle(): void
     {
-        /** @var UserDigimon $userDigimonList */
-        $userDigimonList = UserDigimon::where('is_dead', false)
-            ->where('is_asleep', false)
-            ->get();
+        try {
+            /** @var UserDigimon $userDigimonList */
+            $userDigimonList = UserDigimon::where('is_dead', false)
+                ->where('is_asleep', false)
+                ->get();
 
-        foreach ($userDigimonList as $userDigimon) {
-            $this->updateWaste($userDigimon);
-            $this->updateHunger($userDigimon);
-            $this->updateWeight($userDigimon);
-            $this->updateEnergy($userDigimon);
-            $this->updateSleep($userDigimon);
-            $this->updateDeath($userDigimon);
+            foreach ($userDigimonList as $userDigimon) {
+                $this->updateWaste($userDigimon);
+                $this->updateHunger($userDigimon);
+                $this->updateWeight($userDigimon);
+                $this->updateEnergy($userDigimon);
+                $this->updateSleep($userDigimon);
+                $this->updateDeath($userDigimon);
 
-            $userDigimon->save();
+                $userDigimon->save();
+            }
+        } catch (\Exception $exception) {
+            Log::error($exception);
         }
     }
 
@@ -86,6 +91,9 @@ class UpdateUserDigimonStatsJob implements ShouldQueue
             }
         } else {
             $digimon->malnutrition_start = null;
+            if ($newHungerValue <= 95) {
+                $digimon->consecutive_feedings = 0;
+            }
         }
     }
 

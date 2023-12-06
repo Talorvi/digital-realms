@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Models\Digimon\BaseDigimon;
 use App\Models\Digimon\Digimon;
 use App\Models\UserDigimon;
+use App\Notifications\DigimonCall;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -31,6 +32,7 @@ class CheckDigimonEvolutionJob implements ShouldQueue
                 $evolvedDigimon = $digimonInstance->evolve($userDigimon);
 
                 if ($evolvedDigimon) {
+                    $userDigimon->user->notify(new DigimonCall($userDigimon->getName() . ' digivolved into ' . $evolvedDigimon->getName() . '!'));
                     $evolvedDigimonDbId = Digimon::where('name', $evolvedDigimon->getName())->first()->id;
                     $userDigimon->name = $evolvedDigimon->getName();
                     $userDigimon->digimon_id = $evolvedDigimonDbId;
@@ -44,6 +46,7 @@ class CheckDigimonEvolutionJob implements ShouldQueue
                 } else {
                     // failed evolution
                     $userDigimon->setDead();
+                    $userDigimon->user->notify(new DigimonCall($userDigimon->getName() . ' died while trying to digivolve.'));
                 }
                 $userDigimon->save();
             }
