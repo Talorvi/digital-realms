@@ -17,8 +17,8 @@ class SingleBattle
         $this->player1Digimon = $player1Digimon;
         $this->player2Digimon = $player2Digimon;
 
-        $player1Bonuses = $player1Digimon->getLevelBasedIncreases();
-        $player2Bonuses = $player2Digimon->getLevelBasedIncreases();
+        $player1Bonuses = $this->getLevelBasedIncreases($player1Digimon);
+        $player2Bonuses = $this->getLevelBasedIncreases($player2Digimon);
 
         $this->player1DigimonHp = $this->calculateInitialHp($player1Digimon->digimon->stage) + $player1Bonuses['hpBonus'];
         $this->player2DigimonHp = $this->calculateInitialHp($player2Digimon->digimon->stage) + $player2Bonuses['hpBonus'];

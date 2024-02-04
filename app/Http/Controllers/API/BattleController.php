@@ -47,7 +47,7 @@ class BattleController extends Controller
         ]);
     }
 
-    private function updateBattleStats(UserDigimon $winner, UserDigimon $loser)
+    private function updateBattleStats(UserDigimon $winner, UserDigimon $loser): void
     {
         $winner->addBattle();
         $winner->addBattleWon();
