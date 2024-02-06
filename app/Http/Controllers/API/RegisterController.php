@@ -25,6 +25,7 @@ class RegisterController extends BaseController
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6',
             'c_password' => 'required|same:password|min:6',
+            'timezone' => 'required|timezone',
         ]);
 
         if ($validator->fails()) {
@@ -33,6 +34,7 @@ class RegisterController extends BaseController
 
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
+        $input['timezone'] = $request->timezone;
         $user = User::create($input);
         $success['token'] = $user->createToken('MyApp')->plainTextToken;
         $success['name'] = $user->name;
