@@ -13,10 +13,15 @@ class DigimonEvolutionService
         $this->baseDir = app_path('Models/Digimon');
     }
 
-    public function buildEvolutionTree()
+    public function buildEvolutionTree($rootName = 'Botamon'): array
     {
+        $this->evolutionTree = []; // Reset the tree to handle multiple requests correctly
+        $this->processed = []; // Reset processed files
         $this->processDirectory($this->baseDir . '/Fresh');
-        $nestedTree = $this->convertToNested($this->evolutionTree, 'Botamon');
+        if (!array_key_exists($rootName, $this->evolutionTree)) {
+            return [];
+        }
+        $nestedTree = $this->convertToNested($this->evolutionTree, $rootName);
         return $nestedTree;
     }
 
