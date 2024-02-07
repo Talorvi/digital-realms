@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\DeviceTokenController;
 use App\Http\Controllers\API\DigimonEggController;
 use App\Http\Controllers\API\RegisterController;
 use App\Http\Controllers\API\UserDigimonController;
+use App\Http\Controllers\DigimonController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -51,3 +52,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/user-digimons/{userDigimon}/sleep', [UserDigimonController::class, 'sleep']);
     Route::post('/user-digimons/{userDigimon}/wakeup', [UserDigimonController::class, 'wakeUp']);
 });
+
+Route::get('/digimon/evolution-tree', [DigimonController::class, 'evolutionTree']);

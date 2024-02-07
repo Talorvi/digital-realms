@@ -10,7 +10,6 @@ use App\Models\Digimon\Champion\Meramon;
 use App\Models\Digimon\Champion\Numemon;
 use App\Models\Digimon\Champion\Tyranomon;
 use App\Models\UserDigimon;
-use Carbon\Carbon;
 
 final class Agumon extends BaseDigimon
 {

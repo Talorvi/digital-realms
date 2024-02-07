@@ -4,6 +4,7 @@ namespace App\Models\Digimon\Champion;
 
 use App\Enums\DigimonType;
 use App\Models\Digimon\BaseDigimon;
+use App\Models\Digimon\Ultimate\Mamemon;
 use App\Models\UserDigimon;
 
 final class Meramon extends BaseDigimon
@@ -31,7 +32,7 @@ final class Meramon extends BaseDigimon
         $successRate = $userDigimon->calculateEvolutionSuccessRate();
 
         if (rand(0, 100) < $successRate) {
-            return new Meramon();
+            return new Mamemon();
         }
 
         return null;
