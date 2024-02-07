@@ -15,6 +15,7 @@ This project aims to provide an online simulation of the popular Digimon virtual
 - [x]  Users can unlock new Digimon as they progress.
 - [x]  Users can view and manage their collection of Digimon.
 - [x]  A stats system is in place to track various aspects of the user's Digimon, such as care mistakes, trainings, battles, and more.
+- [x]  A digivolution tree for each existing Digimon.
 
 ## Upcoming features
 - [ ] Implement a more complex battle system with different attack types and strategies.
